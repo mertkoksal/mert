@@ -1,0 +1,93 @@
+# Hello, I will share with you some PHP functions that I have prepared and used for my own project. 
+# I will be sharing the functions included here so that I do not write the same codes again and again, and so that the functions below can be used by other people.
+
+// The functions included here will be constantly updated and new functions will be added. Good work!
+
+
+#1. Shortening a text and putting ... at the end in PHP
+
+// Function 
+
+function text_crop($text = "", $len = 100,$end = "") {
+    if (empty($text) || is_string($text) != true || not_num($len) || $len < 1) {
+        return "";
+    }
+    if (mb_strlen($text) > $len) {
+        $text = mb_substr($text, 0, $len, 'utf-8') . $end;
+    }
+    return $text;
+}
+
+# Use of : <?php echo(text_crop($row["username"], 5, "..")); ?>
+# Output username: "examp.."
+
+/////
+
+# 2. Let's say you have a tweet creation (comment) system. You want to enclose #tags and @mentions in the <a href="#"> structure. This function is just for you.
+//With this function, you don't just convert #tags and @mentions to links. It also automatically creates an embed when the user shares a video from YouTube. 
+And the user can watch this video without leaving your site.
+
+/ 2. Function:
+function tesk_text($tesk_text)  
+   {  
+    $tesk_text= preg_replace("/(^|[\n ])([\w]*?)([\w]*?:\/\/[\w]+[^ \,\"\n\r\t<]*)/is", "$1$2<a target='_blank' href=\"$3\" >$3</a>", $tesk_text);  
+    $tesk_text= preg_replace("/(^|[\n ])([\w]*?)((www)\.[^ \,\"\t\n\r<]*)/is", "$1$2<a target='_blank href=\"http://$3\" >$3</a>", $tesk_text);
+		$tesk_text = preg_replace('/\B\@([a-zA-Z0-9_]{1,15})/', '<a href="/$1">$0</a>', $tesk_text);
+		$tesk_hash = "@#+([a-zA-Z0-9-IıĞğÜüŞşİiÖöÇç]+)@si";
+		$tesk_text = preg_replace($tesk_hash, '<a href="/search?q=$1">$0</a>', $tesk_text);
+		$tesk_text = preg_replace('/\s*[a-zA-Z\/\/:\.]*youtu(be.com\/watch\?v=|.be\/)([a-zA-Z0-9\-_]+)([a-zA-Z0-9\/\*\-\_\?\&\;\%\=\.]*)/i','<iframe src=\'//www.youtube.com/embed/$2\' allowfullscreen></iframe>', $tesk_text );
+    return $tesk_text;  
+}
+
+# Use of: <?php echo tesk_text($row["post_cont"]); ?>
+# Output username: "Hello <a href="www.yoursite.com/jack">@Jack</a>, how are you?"
+# Or Output hashtag: "Just <a href="www.yoursite.com/search?q=HashtagTest">#HashtagTest</a>."
+# e.g, e.g, e.g
+
+/////
+
+# 3. With this class structure, you can create the security of your website. This structure creates a unique token for all transactions made by users. (MD5)
+
+/ 3. Function
+
+class CSRF
+{
+	public static function csrf_token()
+	{
+		$token = md5(uniqid());
+
+		$_SESSION['use_csrf'] = $token;
+
+		echo "<input type='hidden' name='use_csrf' id='use_csrf' value='".$token."'/><br>";
+	}
+	public static function tokenInput($token)
+	{
+		return isset($_SESSION["use_csrf"]) && $_SESSION["use_csrf"] == $token;
+	}
+}
+
+# Use of: <?php CSRF::csrf_token(); ?>
+# Output: <input type='hidden' name='use_csrf' id='use_csrf' value='0c7bb4a1c301378f002829fce55991fb'/> 
+# When any page loads on the user, it creates a unique token for the user.
+
+/////
+
+# 4. User IP Adress
+/ 4. Function
+
+function tesk_ip_adress()  
+{  
+		if (!empty($_SERVER['HTTP_CLIENT_IP']))  
+		{  
+			$ip	= $_SERVER['HTTP_CLIENT_IP'];  
+		}  
+		elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){  
+			$ip	= $_SERVER['HTTP_X_FORWARDED_FOR'];  
+		}  
+		else{  
+			$ip	= $_SERVER['REMOTE_ADDR'];  
+		}  
+		return $ip;  
+}
+
+// I will enlarge this list. When I'm available, I'll also include useful functions from my own script.
